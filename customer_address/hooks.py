@@ -145,6 +145,14 @@ app_license = "mit"
 # 	}
 # }
 
+doc_events = {
+    "Customer": {
+        "after_insert": "customer_address.contact_address_quick_entry.customer_address_link",
+        "on_update": "customer_address.contact_address_quick_entry.customer_address_link",
+    }
+}
+
+
 # Scheduled Tasks
 # ---------------
 
@@ -241,4 +249,3 @@ app_license = "mit"
 # default_log_clearing_doctypes = {
 # 	"Logging DocType Name": 30  # days to retain logs
 # }
-
