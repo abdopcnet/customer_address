@@ -140,7 +140,23 @@ def update_version():
         pattern = r'!\[Version\]\(https://img\.shields\.io/badge/version-[^)]+\)'
         replacement = f'![Version](https://img.shields.io/badge/version-{new_version}-blue)'
 
-        updated_content = re.sub(pattern, replacement, content)
+        # Check if badge exists
+        if re.search(pattern, content):
+            # Update existing badge
+            updated_content = re.sub(pattern, replacement, content)
+        else:
+            # Add badge at the beginning of the file (after title if exists)
+            lines = content.split('\n')
+            badge_line = replacement
+
+            # If first line is a title (starts with #), add badge after it
+            if lines and lines[0].startswith('#'):
+                lines.insert(1, '\n' + badge_line + '\n')
+            else:
+                # Add at the very beginning
+                lines.insert(0, badge_line + '\n')
+
+            updated_content = '\n'.join(lines)
 
         # Write updated content
         with open(readme_file, 'w', encoding='utf-8') as f:
@@ -161,7 +177,8 @@ if __name__ == "__main__":
 
     # Configure git user (local to this repo only)
     subprocess.run(["git", "config", "user.name", "abdopcnet"], check=False)
-    subprocess.run(["git", "config", "user.email", "abdopcnet@gmail.com"], check=False)
+    subprocess.run(["git", "config", "user.email",
+                   "abdopcnet@gmail.com"], check=False)
 
     # Ensure we're on main branch
     subprocess.run(["git", "branch", "-M", "main"], check=False)
